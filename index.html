@@ -7,7 +7,6 @@
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { font-family: 'Segoe UI', Tahoma, sans-serif; background: #f4f6f9; color: #333; }
-    /* WhatsApp flotante */
     .whatsapp-float {
       position: fixed; bottom: 20px; right: 20px; z-index: 1000;
       width: 60px; height: 60px; background-color: #25D366; border-radius: 50%;
@@ -17,16 +16,14 @@
     }
     .whatsapp-float:hover { transform: scale(1.1); }
     .whatsapp-float a { color: white; text-decoration: none; font-size: 30px; line-height: 1; }
-    /* Footer */
     .footer {
       text-align: center; padding: 1rem; background: #004d40; color: white;
       font-size: 0.9rem; position: fixed; bottom: 0; width: 100%; z-index: 999;
     }
-    /* Pantalla de acceso */
     .access-screen {
       display: flex; flex-direction: column; align-items: center; justify-content: center;
       min-height: 100vh; background: linear-gradient(135deg, #004d40, #00695c);
-      padding-bottom: 4rem; /* espacio para footer */
+      padding-bottom: 4rem;
     }
     .access-card {
       background: white; padding: 3rem 2rem; border-radius: 1rem; box-shadow: 0 20px 40px rgba(0,0,0,0.3);
@@ -48,7 +45,6 @@
     .btn.muestra { background: #c9a84c; color: #004d40; font-weight: bold; }
     .btn.muestra:hover { background: #d4af5e; }
     .error-msg { color: #c62828; margin-top: 0.5rem; font-weight: bold; }
-    /* Panel principal */
     .main-panel { display: none; padding: 2rem; max-width: 1100px; margin: 0 auto; padding-bottom: 5rem; }
     .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
     .header h2 { color: #004d40; }
@@ -64,7 +60,6 @@
     .btn-group { display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 1rem; }
     .btn-group .btn { width: auto; }
     pre { white-space: pre-wrap; background: #f5f5f5; padding: 1rem; border-radius: 0.5rem; }
-    /* Modal */
     .modal {
       display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
       background: rgba(0,0,0,0.6); z-index: 2000; align-items: center; justify-content: center;
@@ -82,17 +77,14 @@
 </head>
 <body>
 
-<!-- WhatsApp flotante -->
 <div class="whatsapp-float">
   <a href="https://wa.me/593996328491" target="_blank" title="Contactar por WhatsApp">💬</a>
 </div>
 
-<!-- Footer -->
 <div class="footer">
   Powered by Physics – 0995324419 &nbsp;|&nbsp; © 2026 Multiestudios
 </div>
 
-<!-- Modal para caso de muestra -->
 <div id="modalMuestra" class="modal">
   <div class="modal-content">
     <button class="close-modal" id="closeModalBtn">&times;</button>
@@ -101,7 +93,6 @@
   </div>
 </div>
 
-<!-- PANTALLA DE ACCESO -->
 <div id="accessScreen" class="access-screen">
   <div class="access-card">
     <h1>MULTIESTUDIOS</h1>
@@ -120,7 +111,6 @@
   </div>
 </div>
 
-<!-- PANEL PRINCIPAL (oculto al inicio) -->
 <div id="mainPanel" class="main-panel">
   <div class="header">
     <h2>Panel del Aspirante – <span id="careerDisplay"></span></h2>
@@ -167,9 +157,8 @@
 </div>
 
 <script>
-// ==================== CONFIGURACIÓN ====================
 const App = {
-  API_KEY: 'sk-tu-api-key-aqui',   // ¡REEMPLAZAR con su API key real!
+  API_KEY: 'sk-tu-api-key-aqui',
   API_URL: 'https://api.deepseek.com/v1/chat/completions',
   MODEL: 'deepseek-v4-flash',
   currentUser: null,
@@ -183,59 +172,58 @@ const App = {
   ]
 };
 
-// ==================== TEMARIOS ====================
 App.temarios = {
   'Medicina General': [
-    "1. Medicina forense: valoración de lesiones en víctimas y agresores conforme al COIP.",
-    "2. Tanatología policial: levantamiento de cadáver, signos posmortem y cronotanatodiagnóstico.",
-    "3. Valoración del estado de salud del detenido: deberes constitucionales y protocolos de ingreso.",
-    "4. Asfixias mecánicas en contexto de violencia policial o suicidio bajo custodia.",
-    "5. Heridas por proyectil de arma de fuego: interpretación médico‑legal y cadena de custodia.",
-    "6. Lesiones por explosivos en atentados contra instalaciones policiales.",
-    "7. Diagnóstico diferencial de lesiones compatibles con tortura o maltrato.",
-    "8. Toxicología de sustancias incautadas: cocaína, marihuana, precursores y nuevas drogas.",
-    "9. Embriaguez y estupefacientes: peritaje clínico para partes de tránsito y delitos.",
-    "10. Evaluación de la capacidad de conducción bajo sedantes o patologías crónicas en conductores policiales.",
-    "11. Examen físico forense de agresión sexual: protocolo ecuatoriano (Ministerio de Salud Pública).",
-    "12. Violencia de género: abordaje médico‑legal en unidades de policía comunitaria.",
-    "13. Psiquiatría forense: evaluación de la imputabilidad y trastornos mentales en victimarios.",
-    "14. Contención mecánica y farmacológica de personas agitadas: riesgos y protocolos.",
-    "15. Síndrome de abstinencia en detenidos drogodependientes: manejo urgente.",
-    "16. Enfermedades infectocontagiosas en cárceles y centros de detención: tuberculosis, VIH, hepatitis.",
-    "17. Bioseguridad y manejo de fluidos corporales en escenas del crimen.",
-    "18. Primer respondiente médico en incidentes con materiales peligrosos (HAZMAT).",
-    "19. Atención prehospitalaria en tiroteos activos: protocolo TCCC (Tactical Combat Casualty Care).",
-    "20. Extracción táctica de heridos en zonas hostiles (CASEVAC/MEDEVAC).",
-    "21. Soporte vital básico y avanzado en patrulleros medicalizados.",
-    "22. Valoración primaria y secundaria en siniestros viales múltiples.",
-    "23. Triaje en incidentes de múltiples víctimas (START y SALTO).",
-    "24. Manejo del dolor agudo en el entorno prehospitalario con recursos limitados.",
-    "25. Quemaduras por explosivos, eléctricas y químicas en operativos especiales.",
-    "26. Traumatismos por onda expansiva (blast injuries): fisiopatología y tratamiento inicial.",
-    "27. Intoxicación por monóxido de carbono en recintos cerrados (garitas, vehículos blindados).",
-    "28. Patologías relacionadas con el estrés calórico en unidades de tránsito y patrullaje.",
-    "29. Exposición crónica al plomo en instructores de tiro y personal de armería.",
-    "30. Ergonomía y patología musculoesquelética del personal con chaleco balístico.",
-    "31. Hipoacusia inducida por ruido en prácticas de polígono.",
-    "32. Evaluación de la aptitud médica para el uso de armas de fuego.",
-    "33. Reconocimientos médicos periódicos al personal policial: normativa nacional e indicadores.",
-    "34. Valoración de la discapacidad laboral sobrevenida por acto de servicio.",
-    "35. Protocolos de vacunación y quimioprofilaxis para misiones en zonas selváticas.",
-    "36. Medicina aeroespacial: requisitos para tripulaciones de helicópteros policiales.",
-    "37. Buceo de rescate: afecciones por descompresión y barotrauma.",
-    "38. Nutrición y suplementación en unidades tácticas de despliegue prolongado.",
-    "39. Trastornos del sueño y turnicidad: impacto cognitivo en tomadores de decisión.",
-    "40. Detección precoz de síndrome de burnout y estrés postraumático en efectivos.",
-    "41. Entrevista clínica al personal luego de incidentes críticos (defusing y debriefing).",
-    "42. Medicina de desastres: organización de hospitales de campaña en catástrofes naturales.",
-    "43. Gestión de brotes epidémicos en acuartelamientos y centros de formación.",
-    "44. Auditoría médica de los servicios de salud policial con criterios de calidad (ISO 9001).",
-    "45. Administración hospitalaria en el Hospital de la Policía Nacional del Ecuador.",
-    "46. Contratación pública (LOSNCP) aplicada a la adquisición de insumos y equipos médicos.",
-    "47. Aspectos legales de la historia clínica como documento público y prueba judicial.",
-    "48. Responsabilidad penal por mala praxis médica en el ámbito policial.",
-    "49. Principios de bioética en la atención a detenidos y población vulnerable.",
-    "50. Planeación estratégica en sanidad policial: optimización de recursos y eficiencia del gasto público."
+    "1. Valoración clínica del detenido: anamnesis, examen físico y registro en historia clínica.",
+    "2. Detección de signos de maltrato físico en personas privadas de libertad: protocolo de actuación.",
+    "3. Manejo del paciente con intoxicación aguda por sustancias psicoactivas en custodia.",
+    "4. Atención de urgencias cardiovasculares (infarto agudo de miocardio, crisis hipertensiva) en el dispensario policial.",
+    "5. Crisis asmática y enfermedad pulmonar obstructiva crónica: manejo agudo y crónico.",
+    "6. Diabetes mellitus e insulinoterapia: control en pacientes policiales activos.",
+    "7. Infecciones respiratorias agudas en acuartelamientos: diagnóstico y control de brotes.",
+    "8. Enfermedades diarreicas agudas en destacamentos rurales: manejo clínico y prevención.",
+    "9. Tuberculosis pulmonar: diagnóstico precoz y protocolo de aislamiento en instalaciones policiales.",
+    "10. VIH/SIDA: consejería, prueba voluntaria y manejo del paciente en el ámbito laboral.",
+    "11. Hepatitis virales (A, B, C): profilaxis posexposición en personal de riesgo.",
+    "12. Esquemas de vacunación en el adulto: prioridades para el personal policial.",
+    "13. Cadena de frío en el manejo de vacunas e insumos biológicos.",
+    "14. Salud sexual y reproductiva: anticoncepción y prevención de ITS en servidoras policiales.",
+    "15. Control prenatal básico en esposas de policías o personal femenino destacado.",
+    "16. Atención del recién nacido en parto extrahospitalario en unidades móviles.",
+    "17. Emergencias obstétricas: preeclampsia y hemorragia postparto en entorno táctico.",
+    "18. Atención inicial del politraumatizado en accidentes de tránsito: protocolo XABCDE.",
+    "19. Manejo del dolor torácico agudo en entorno prehospitalario.",
+    "20. Reanimación cardiopulmonar básica y avanzada según guías AHA 2020.",
+    "21. Uso del DEA y manejo de arritmias mortales en primeros respondedores.",
+    "22. Triaje START en incidentes con múltiples víctimas.",
+    "23. Quemaduras térmicas y químicas: clasificación, tratamiento inicial y criterios de traslado.",
+    "24. Lesiones por onda expansiva (blast injuries): fisiopatología y abordaje inicial.",
+    "25. Intoxicación por monóxido de carbono en espacios confinados (garitas, vehículos).",
+    "26. Golpe de calor y enfermedades relacionadas con el estrés térmico en patrulleros.",
+    "27. Hipotermia accidental en operativos de altura.",
+    "28. Mordeduras y picaduras de animales ponzoñosos (serpientes, arácnidos) en zonas selváticas.",
+    "29. Atención inicial de heridas por proyectil de arma de fuego en combate (TCCC).",
+    "30. Control de hemorragias masivas: torniquete, agentes hemostáticos y empaquetamiento.",
+    "31. Manejo de la vía aérea difícil en emergencias extrahospitalarias.",
+    "32. Accesos vasculares periféricos e intraóseos en pacientes críticos.",
+    "33. Fluidoterapia en el paciente en shock hipovolémico o séptico.",
+    "34. Medicina ocupacional: reconocimientos médicos periódicos del personal policial.",
+    "35. Evaluación de la aptitud física y mental para el servicio activo.",
+    "36. Prevención y manejo de lesiones musculoesqueléticas en el entrenamiento policial.",
+    "37. Hipoacusia inducida por ruido en instructores de tiro y medidas de protección.",
+    "38. Exposición crónica al plomo en polígonos de tiro: monitoreo y manejo clínico.",
+    "39. Trastornos del sueño y fatiga crónica en personal con turnos rotativos.",
+    "40. Síndrome de burnout y estrés postraumático: detección precoz y derivación.",
+    "41. Medicina de desastres: organización de puestos médicos avanzados en catástrofes naturales.",
+    "42. Epidemiología básica: vigilancia y notificación obligatoria de enfermedades.",
+    "43. Promoción de la salud y prevención de enfermedades crónicas no transmisibles.",
+    "44. Uso racional de antibióticos y prevención de resistencia antimicrobiana.",
+    "45. Farmacología esencial en el botiquín del médico policial.",
+    "46. Normativa de contratación pública (LOSNCP) aplicada a medicamentos e insumos médicos.",
+    "47. Historia clínica única: estandarización, confidencialidad y valor legal.",
+    "48. Consentimiento informado en procedimientos médicos: aspectos éticos y jurídicos.",
+    "49. Bioética en la atención de personas privadas de libertad.",
+    "50. Planeación estratégica y administración de servicios de salud policial."
   ],
   'Enfermería': [
     "1. Protocolo XABCDE y control de hemorragias masivas con torniquete en entorno policial.",
@@ -343,16 +331,15 @@ App.temarios = {
   ]
 };
 
-// ==================== CASOS BANCARIOS ====================
 App.casosBanco = {
   'Medicina General': {
-    enunciado: "Un detenido en un calabozo de la Policía Nacional es encontrado muerto durante la madrugada. El cuerpo yace boca arriba, con un colchón parcialmente quemado y un frasco vacío de solvente. El médico de guardia debe realizar el levantamiento del cadáver y la valoración inicial. Se sospecha intoxicación por inhalación y se requiere precisar causa y manera de muerte.",
+    enunciado: "Un cadete de 22 años, durante una prueba física en el centro de formación policial en Manabí, presenta confusión, piel caliente y seca, temperatura axilar de 40.2 °C, taquicardia y taquipnea. El instructor sospecha golpe de calor y lo traslada al dispensario médico. Usted es el médico general de guardia. La temperatura ambiental es de 34 °C y la humedad relativa del 85 %.",
     preguntas: [
-      "1. ¿Qué signos posmortem esperaría encontrar y cómo estimaría el intervalo de muerte?",
-      "2. Describa el procedimiento médico-legal para la toma de muestras toxicológicas y la preservación de la cadena de custodia.",
-      "3. ¿Qué consideraciones éticas y legales rigen la actuación del médico ante un fallecido bajo custodia policial?"
+      "1. Realice el diagnóstico presuntivo y describa la fisiopatología del golpe de calor por esfuerzo.",
+      "2. Detalle el manejo inmediato y el plan de enfriamiento activo, incluyendo farmacoterapia si corresponde.",
+      "3. ¿Qué medidas preventivas recomendaría al departamento de entrenamiento para evitar nuevos casos, considerando la normativa de seguridad y salud ocupacional?"
     ],
-    solucion: "1. Signos posmortem: lividez fija en declive compatible con posición supina, rigidez en evolución, enfriamiento progresivo (algor mortis) y posible mancha verde abdominal por inicio de putrefacción. El intervalo se estima con el nomograma de Henssge, considerando la temperatura ambiente del calabozo. La presencia de solvente sugiere asfixia química; en autopsia pueden hallarse congestión pulmonar y olor característico en vísceras.\n2. Toma de muestras: sangre periférica (femoral), orina, humor vítreo y contenido gástrico, rotuladas con fecha, hora, identidad y firma. Se embalan en recipientes herméticos, se sellan y se registra cada entrega en el formulario de cadena de custodia hasta el Servicio Nacional de Medicina Legal.\n3. El médico actúa como perito imparcial (Art. 454 COIP). Debe documentar fielmente los hallazgos en la historia clínica pericial, sin emitir juicios sobre la custodia, pero reportando cualquier lesión sospechosa. La confidencialidad y el respeto a los derechos del fallecido y sus familiares son obligatorios."
+    solucion: "1. Diagnóstico presuntivo: golpe de calor por esfuerzo (temperatura central >40 °C, disfunción neurológica, exposición a calor). Fisiopatología: la producción de calor metabólico supera la capacidad de termorregulación (sudoración y vasodilatación cutánea) saturadas por la alta humedad. Se produce colapso termorregulador central, fallo multiorgánico por hipertermia directa, rabdomiólisis y coagulación intravascular diseminada.\n2. Manejo inmediato: retirar al paciente del ambiente caluroso, desvestirlo, iniciar enfriamiento activo con compresas frías en cuello, axilas e ingles, aspersión de agua fría y ventilación. Si está disponible, usar manta de enfriamiento. Administrar suero salino frío intravenoso (20 mL/kg en bolo inicial). Monitorear signos vitales, ECG y temperatura cada 5-10 minutos. Si hay convulsiones, diazepam 5-10 mg IV. Trasladar a un hospital si no mejora en 30 minutos o hay deterioro neurológico.\n3. Prevención: aclimatación progresiva al calor durante 7-14 días, programar ejercicios intensos en horas frescas, hidratación programada (agua fresca cada 20 min), pausas obligatorias, vigilancia del índice WBGT (temperatura de globo y bulbo húmedo), capacitación del personal para reconocer signos tempranos."
   },
   'Enfermería': {
     enunciado: "Un servidor policial sufre una herida por proyectil de arma de fuego en la extremidad inferior durante un operativo. Presenta hemorragia masiva. Usted, como enfermero/a, debe aplicar el protocolo XABCDE y colocar un torniquete. Además, el paciente muestra signos de shock hipovolémico.",
@@ -374,11 +361,8 @@ App.casosBanco = {
   }
 };
 
-// Caso de muestra (Enfermería) para el botón público
 App.muestraCaso = App.casosBanco['Enfermería'];
 
-// ==================== FUNCIONES ====================
-// Mostrar pantalla acceso
 App.mostrarAcceso = function() {
   document.getElementById('accessScreen').style.display = 'flex';
   document.getElementById('mainPanel').style.display = 'none';
@@ -387,7 +371,6 @@ App.mostrarAcceso = function() {
   document.getElementById('loginError').textContent = '';
 };
 
-// Mostrar panel principal
 App.mostrarPanel = function() {
   document.getElementById('accessScreen').style.display = 'none';
   document.getElementById('mainPanel').style.display = 'block';
@@ -408,7 +391,6 @@ App.resetearCaso = function() {
   App.modelAnswerVisible = false;
 };
 
-// Login
 App.login = function() {
   const cedula = document.getElementById('cedulaInput').value.trim();
   const carrera = document.getElementById('carreraSelect').value;
@@ -432,7 +414,6 @@ App.logout = function() {
   App.mostrarAcceso();
 };
 
-// Temario
 App.cargarTemario = function() {
   App.temasActuales = App.temarios[App.currentUser.carrera] || [];
   App.renderizarTemario();
@@ -449,7 +430,6 @@ App.filterTemas = function() {
   App.renderizarTemario(texto);
 };
 
-// Casos
 App.loadCaseFromBank = async function() {
   if (!App.currentUser) return;
   const caso = App.casosBanco[App.currentUser.carrera];
@@ -475,7 +455,6 @@ App.displayCase = function(caseObj) {
   App.modelAnswerVisible = false;
 };
 
-// Sanitizar JSON
 App.sanitizeJSON = function(str) {
   let result = '';
   let inString = false;
@@ -539,7 +518,6 @@ App.generateCaseWithAI = async function() {
   }
 };
 
-// Respuesta modelo y revisión
 App.showModelAnswer = function() {
   if (!App.currentCase) { alert('Primero debe crear un caso práctico.'); return; }
   const box = document.getElementById('modelAnswerBox');
@@ -575,7 +553,6 @@ App.reviewMyAnswer = async function() {
   }
 };
 
-// API DeepSeek
 App.callDeepSeek = async function(messages, temperature = 0.7, maxTokens = 2000) {
   const resp = await fetch(App.API_URL, {
     method: 'POST',
@@ -587,7 +564,6 @@ App.callDeepSeek = async function(messages, temperature = 0.7, maxTokens = 2000)
   return data.choices[0].message.content;
 };
 
-// Modal de muestra
 App.mostrarMuestra = function() {
   const modal = document.getElementById('modalMuestra');
   const content = document.getElementById('muestraContent');
@@ -606,7 +582,6 @@ App.cerrarModal = function() {
   document.getElementById('modalMuestra').style.display = 'none';
 };
 
-// Inicialización
 window.addEventListener('DOMContentLoaded', () => {
   document.getElementById('btnIngresar').addEventListener('click', App.login);
   document.getElementById('btnLogout').addEventListener('click', App.logout);
