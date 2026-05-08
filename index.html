@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Multiestudios – Tutor Inteligente para Especialistas Policiales (Salud)</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', Tahoma, sans-serif; background: #f4f6f9; color: #333; }
+    /* WhatsApp flotante */
+    .whatsapp-float {
+      position: fixed; bottom: 20px; right: 20px; z-index: 1000;
+      width: 60px; height: 60px; background-color: #25D366; border-radius: 50%;
+      box-shadow: 2px 2px 8px rgba(0,0,0,0.3);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; transition: transform 0.2s;
+    }
+    .whatsapp-float:hover { transform: scale(1.1); }
+    .whatsapp-float a { color: white; text-decoration: none; font-size: 30px; line-height: 1; }
+    /* Footer */
+    .footer {
+      text-align: center; padding: 1rem; background: #004d40; color: white;
+      font-size: 0.9rem; position: fixed; bottom: 0; width: 100%; z-index: 999;
+    }
+    /* Pantalla de acceso */
+    .access-screen {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      min-height: 100vh; background: linear-gradient(135deg, #004d40, #00695c);
+      padding-bottom: 4rem; /* espacio para footer */
+    }
+    .access-card {
+      background: white; padding: 3rem 2rem; border-radius: 1rem; box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+      text-align: center; width: 90%; max-width: 450px; margin: 2rem 0;
+    }
+    .access-card h1 { color: #004d40; margin-bottom: 0.2rem; font-size: 2rem; }
+    .access-card .subtitle { color: #7f8c8d; margin-bottom: 0.5rem; }
+    .access-card .lema { color: #555; margin-bottom: 2rem; font-style: italic; }
+    .access-card select, .access-card input {
+      width: 100%; padding: 0.8rem; margin-bottom: 1rem; border: 1px solid #ccc; border-radius: 0.5rem;
+      font-size: 1rem;
+    }
+    .btn {
+      background: #004d40; color: white; border: none; padding: 0.8rem 1.5rem; border-radius: 0.5rem;
+      font-size: 1rem; cursor: pointer; transition: background 0.3s; width: 100%; margin-top: 0.5rem;
+    }
+    .btn:hover { background: #00695c; }
+    .btn.secondary { background: #607d8b; }
+    .btn.muestra { background: #c9a84c; color: #004d40; font-weight: bold; }
+    .btn.muestra:hover { background: #d4af5e; }
+    .error-msg { color: #c62828; margin-top: 0.5rem; font-weight: bold; }
+    /* Panel principal */
+    .main-panel { display: none; padding: 2rem; max-width: 1100px; margin: 0 auto; padding-bottom: 5rem; }
+    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
+    .header h2 { color: #004d40; }
+    .logout-btn { background: #b71c1c; color: white; border: none; padding: 0.5rem 1.2rem; border-radius: 0.3rem; cursor: pointer; }
+    .section { background: white; border-radius: 0.8rem; padding: 1.8rem; margin-bottom: 2rem; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+    .section h3 { color: #004d40; margin-bottom: 1rem; border-bottom: 2px solid #004d40; padding-bottom: 0.4rem; }
+    .temario-list { max-height: 400px; overflow-y: auto; padding: 0.5rem; background: #fafafa; border-radius: 0.4rem; }
+    .temario-item { padding: 0.7rem; border-bottom: 1px solid #e0e0e0; cursor: pointer; }
+    .temario-item:hover { background: #e0f2f1; }
+    .case-box, .model-answer-box, .feedback-box { margin-top: 1rem; }
+    textarea { width: 100%; height: 200px; padding: 0.8rem; border: 1px solid #ccc; border-radius: 0.5rem; resize: vertical; font-size: 0.95rem; }
+    .loading { text-align: center; color: #004d40; margin: 1rem 0; }
+    .btn-group { display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 1rem; }
+    .btn-group .btn { width: auto; }
+    pre { white-space: pre-wrap; background: #f5f5f5; padding: 1rem; border-radius: 0.5rem; }
+    /* Modal */
+    .modal {
+      display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.6); z-index: 2000; align-items: center; justify-content: center;
+    }
+    .modal-content {
+      background: white; border-radius: 1rem; padding: 2rem; max-width: 700px; width: 90%;
+      max-height: 80vh; overflow-y: auto; position: relative;
+    }
+    .modal-content h3 { color: #004d40; margin-bottom: 1rem; }
+    .close-modal {
+      position: absolute; top: 1rem; right: 1.2rem; font-size: 1.5rem; cursor: pointer;
+      color: #555; background: none; border: none;
+    }
+  </style>
+</head>
+<body>
+
+<!-- WhatsApp flotante -->
+<div class="whatsapp-float">
+  <a href="https://wa.me/593996328491" target="_blank" title="Contactar por WhatsApp">💬</a>
+</div>
+
+<!-- Footer -->
+<div class="footer">
+  Powered by Physics – 0995324419 &nbsp;|&nbsp; © 2026 Multiestudios
+</div>
+
+<!-- Modal para caso de muestra -->
+<div id="modalMuestra" class="modal">
+  <div class="modal-content">
+    <button class="close-modal" id="closeModalBtn">&times;</button>
+    <h3>Caso Práctico de Muestra (Enfermería)</h3>
+    <div id="muestraContent"></div>
+  </div>
+</div>
+
+<!-- PANTALLA DE ACCESO -->
+<div id="accessScreen" class="access-screen">
+  <div class="access-card">
+    <h1>MULTIESTUDIOS</h1>
+    <p class="subtitle">Centro de Educación Continua</p>
+    <p class="lema">Tutor Inteligente para Postulantes a Especialistas de la Policía Nacional en el Área de Salud</p>
+    <input type="text" id="cedulaInput" placeholder="Número de cédula" />
+    <select id="carreraSelect">
+      <option value="">Seleccione carrera</option>
+      <option>Medicina General</option>
+      <option>Enfermería</option>
+      <option>Odontología</option>
+    </select>
+    <button class="btn" id="btnIngresar">Ingresar</button>
+    <button class="btn muestra" id="btnMuestra">📋 Ver caso práctico de muestra</button>
+    <div id="loginError" class="error-msg"></div>
+  </div>
+</div>
+
+<!-- PANEL PRINCIPAL (oculto al inicio) -->
+<div id="mainPanel" class="main-panel">
+  <div class="header">
+    <h2>Panel del Aspirante – <span id="careerDisplay"></span></h2>
+    <button class="logout-btn" id="btnLogout">Cerrar sesión</button>
+  </div>
+
+  <div class="section">
+    <h3>Temario de 50 temas – <span id="careerTemarioTitle"></span></h3>
+    <input type="text" id="searchTema" placeholder="Buscar tema..." style="width:100%; padding:0.5rem; margin-bottom:0.5rem;" onkeyup="App.filterTemas()" />
+    <div id="temarioContainer" class="temario-list"></div>
+  </div>
+
+  <div class="section">
+    <h3>Caso Práctico</h3>
+    <div id="caseContent" class="case-box">Presione "Crear caso práctico" para comenzar.</div>
+    <div class="btn-group">
+      <button class="btn" id="btnCasoBanco">Crear caso práctico (banco)</button>
+      <button class="btn secondary" id="btnCasoIA">Nuevo caso con IA</button>
+    </div>
+    <div id="caseLoading" class="loading" style="display:none;">Generando caso, por favor espere...</div>
+  </div>
+
+  <div class="section">
+    <h3>Tu Respuesta</h3>
+    <textarea id="userAnswer" placeholder="Escribe aquí tu respuesta técnica detallada..."></textarea>
+  </div>
+
+  <div class="section">
+    <h3>Solución y Retroalimentación</h3>
+    <div class="btn-group">
+      <button class="btn" id="btnVerRespuesta">Ver respuesta técnica</button>
+      <button class="btn secondary" id="btnRevisar">Revisar mi respuesta (IA)</button>
+    </div>
+    <div id="modelAnswerBox" class="model-answer-box" style="display:none;">
+      <h4>Respuesta técnica:</h4>
+      <div id="modelAnswerContent"></div>
+    </div>
+    <div id="feedbackBox" class="feedback-box" style="display:none;">
+      <h4>Evaluación de tu respuesta:</h4>
+      <div id="feedbackContent"></div>
+    </div>
+    <div id="feedbackLoading" class="loading" style="display:none;">Analizando tu respuesta, espera unos segundos...</div>
+  </div>
+</div>
+
+<script>
+// ==================== CONFIGURACIÓN ====================
+const App = {
+  API_KEY: 'sk-tu-api-key-aqui',   // ¡REEMPLAZAR con su API key real!
+  API_URL: 'https://api.deepseek.com/v1/chat/completions',
+  MODEL: 'deepseek-v4-flash',
+  currentUser: null,
+  currentCase: null,
+  modelAnswerVisible: false,
+  temasActuales: [],
+  usuarios: [
+    { cedula: '1722222222', carrera: 'Medicina General' },
+    { cedula: '1733333333', carrera: 'Enfermería' },
+    { cedula: '1744444444', carrera: 'Odontología' }
+  ]
+};
+
+// ==================== TEMARIOS ====================
+App.temarios = {
+  'Medicina General': [
+    "1. Medicina forense: valoración de lesiones en víctimas y agresores conforme al COIP.",
+    "2. Tanatología policial: levantamiento de cadáver, signos posmortem y cronotanatodiagnóstico.",
+    "3. Valoración del estado de salud del detenido: deberes constitucionales y protocolos de ingreso.",
+    "4. Asfixias mecánicas en contexto de violencia policial o suicidio bajo custodia.",
+    "5. Heridas por proyectil de arma de fuego: interpretación médico‑legal y cadena de custodia.",
+    "6. Lesiones por explosivos en atentados contra instalaciones policiales.",
+    "7. Diagnóstico diferencial de lesiones compatibles con tortura o maltrato.",
+    "8. Toxicología de sustancias incautadas: cocaína, marihuana, precursores y nuevas drogas.",
+    "9. Embriaguez y estupefacientes: peritaje clínico para partes de tránsito y delitos.",
+    "10. Evaluación de la capacidad de conducción bajo sedantes o patologías crónicas en conductores policiales.",
+    "11. Examen físico forense de agresión sexual: protocolo ecuatoriano (Ministerio de Salud Pública).",
+    "12. Violencia de género: abordaje médico‑legal en unidades de policía comunitaria.",
+    "13. Psiquiatría forense: evaluación de la imputabilidad y trastornos mentales en victimarios.",
+    "14. Contención mecánica y farmacológica de personas agitadas: riesgos y protocolos.",
+    "15. Síndrome de abstinencia en detenidos drogodependientes: manejo urgente.",
+    "16. Enfermedades infectocontagiosas en cárceles y centros de detención: tuberculosis, VIH, hepatitis.",
+    "17. Bioseguridad y manejo de fluidos corporales en escenas del crimen.",
+    "18. Primer respondiente médico en incidentes con materiales peligrosos (HAZMAT).",
+    "19. Atención prehospitalaria en tiroteos activos: protocolo TCCC (Tactical Combat Casualty Care).",
+    "20. Extracción táctica de heridos en zonas hostiles (CASEVAC/MEDEVAC).",
+    "21. Soporte vital básico y avanzado en patrulleros medicalizados.",
+    "22. Valoración primaria y secundaria en siniestros viales múltiples.",
+    "23. Triaje en incidentes de múltiples víctimas (START y SALTO).",
+    "24. Manejo del dolor agudo en el entorno prehospitalario con recursos limitados.",
+    "25. Quemaduras por explosivos, eléctricas y químicas en operativos especiales.",
+    "26. Traumatismos por onda expansiva (blast injuries): fisiopatología y tratamiento inicial.",
+    "27. Intoxicación por monóxido de carbono en recintos cerrados (garitas, vehículos blindados).",
+    "28. Patologías relacionadas con el estrés calórico en unidades de tránsito y patrullaje.",
+    "29. Exposición crónica al plomo en instructores de tiro y personal de armería.",
+    "30. Ergonomía y patología musculoesquelética del personal con chaleco balístico.",
+    "31. Hipoacusia inducida por ruido en prácticas de polígono.",
+    "32. Evaluación de la aptitud médica para el uso de armas de fuego.",
+    "33. Reconocimientos médicos periódicos al personal policial: normativa nacional e indicadores.",
+    "34. Valoración de la discapacidad laboral sobrevenida por acto de servicio.",
+    "35. Protocolos de vacunación y quimioprofilaxis para misiones en zonas selváticas.",
+    "36. Medicina aeroespacial: requisitos para tripulaciones de helicópteros policiales.",
+    "37. Buceo de rescate: afecciones por descompresión y barotrauma.",
+    "38. Nutrición y suplementación en unidades tácticas de despliegue prolongado.",
+    "39. Trastornos del sueño y turnicidad: impacto cognitivo en tomadores de decisión.",
+    "40. Detección precoz de síndrome de burnout y estrés postraumático en efectivos.",
+    "41. Entrevista clínica al personal luego de incidentes críticos (defusing y debriefing).",
+    "42. Medicina de desastres: organización de hospitales de campaña en catástrofes naturales.",
+    "43. Gestión de brotes epidémicos en acuartelamientos y centros de formación.",
+    "44. Auditoría médica de los servicios de salud policial con criterios de calidad (ISO 9001).",
+    "45. Administración hospitalaria en el Hospital de la Policía Nacional del Ecuador.",
+    "46. Contratación pública (LOSNCP) aplicada a la adquisición de insumos y equipos médicos.",
+    "47. Aspectos legales de la historia clínica como documento público y prueba judicial.",
+    "48. Responsabilidad penal por mala praxis médica en el ámbito policial.",
+    "49. Principios de bioética en la atención a detenidos y población vulnerable.",
+    "50. Planeación estratégica en sanidad policial: optimización de recursos y eficiencia del gasto público."
+  ],
+  'Enfermería': [
+    "1. Protocolo XABCDE y control de hemorragias masivas con torniquete en entorno policial.",
+    "2. Reanimación cardiopulmonar básica y uso del DEA en unidades de policía.",
+    "3. Manejo de la vía aérea y ventilación con dispositivos supraglóticos en emergencias.",
+    "4. Canalización de vía periférica y administración segura de medicamentos intravenosos.",
+    "5. Técnica de administración subcutánea y cuidados en pacientes diabéticos (insulina).",
+    "6. Curaciones de heridas por arma de fuego y manejo de infecciones en zonas tácticas.",
+    "7. Empaquetamiento de heridas y uso de agentes hemostáticos (QuikClot, Celox).",
+    "8. Inmovilización y traslado de pacientes politraumatizados con tabla espinal.",
+    "9. Atención de quemaduras térmicas y químicas en operativos especiales.",
+    "10. Triaje prehospitalario: método START y categorización de víctimas.",
+    "11. Llenado del Formulario 005 (Evolución) y hoja de signos vitales del MSP.",
+    "12. Registro adecuado de constantes vitales y balance hídrico en pacientes críticos.",
+    "13. Manejo de desfibriladores externos automáticos (DEA) en espacios públicos.",
+    "14. Bioseguridad y manejo de material cortopunzante en centros de salud policial.",
+    "15. Prevención de infecciones asociadas a la atención en salud (IAAS) en calabozos.",
+    "16. Protocolo de lavado de manos y los 5 momentos según OMS.",
+    "17. Administración de vacunas prioritarias al personal policial (cadena de frío).",
+    "18. Responsabilidad ética y legal ante la detección de signos de maltrato en detenidos.",
+    "19. Aplicación de sueroterapia en casos de deshidratación por golpe de calor.",
+    "20. Cuidados de enfermería en intoxicaciones agudas (drogas, alcohol).",
+    "21. Manejo inicial de crisis convulsivas en centros de detención.",
+    "22. Atención de partos de emergencia en unidades policiales móviles.",
+    "23. Protocolos de aislamiento para enfermedades infectocontagiosas en acuartelamientos.",
+    "24. Electrocardiograma básico y reconocimiento de arritmias mortales.",
+    "25. Preparación y administración de medicamentos psicotrópicos bajo prescripción.",
+    "26. Cuidados de la sonda vesical y prevención de infecciones urinarias.",
+    "27. Alimentación enteral y cuidados de la sonda nasogástrica en pacientes postrados.",
+    "28. Prevención de úlceras por presión en pacientes inmovilizados.",
+    "29. Manejo del estrés postraumático en el personal policial: abordaje de enfermería.",
+    "30. Educación para la salud bucal del personal operativo en destacamentos.",
+    "31. Cuidados paliativos en pacientes terminales del Hospital de la Policía.",
+    "32. Organización de brigadas de salud y vacunación en zonas rurales.",
+    "33. Manejo de residuos biológicos y peligrosos en consultorios policiales.",
+    "34. Farmacología básica: interacciones medicamentosas frecuentes en urgencias.",
+    "35. Oxigenoterapia y manejo de concentradores portátiles en patrullas.",
+    "36. Cuidados de estomas y ostomías en pacientes crónicos.",
+    "37. Principios de ergonomía para prevenir lesiones musculoesqueléticas en enfermeros.",
+    "38. Ética en la atención de detenidos: confidencialidad y derechos humanos.",
+    "39. Comunicación efectiva con pacientes agresivos o bajo efectos de sustancias.",
+    "40. Documentación clínica como evidencia judicial: cadena de custodia de registros.",
+    "41. Atención integral al adulto mayor en hogares de acogida policial.",
+    "42. Prevención del consumo de drogas en jóvenes cadetes de la Policía.",
+    "43. Aplicación de pruebas rápidas (VIH, sífilis, hepatitis) en brigadas de salud.",
+    "44. Manejo de crisis hipertensivas en el dispensario médico policial.",
+    "45. Organización de campañas de vacunación y cadena de frío en la Policía.",
+    "46. Gestión de insumos y equipos de enfermería bajo la LOSNCP.",
+    "47. Indicadores de calidad en los servicios de enfermería institucional.",
+    "48. Normas de seguridad del paciente en el Hospital de la Policía Nacional.",
+    "49. Trabajo en equipo interdisciplinario: médico, enfermero, odontólogo y psicólogo.",
+    "50. Liderazgo en enfermería y coordinación de equipos de respuesta rápida."
+  ],
+  'Odontología': [
+    "1. Odontología forense: identificación de cadáveres mediante ficha dental y rugoscopia.",
+    "2. Queiloscopia y análisis de marcas de mordida en escenas del crimen.",
+    "3. Radiología odontológica portátil en el lugar de los hechos.",
+    "4. Toma de impresiones dentales post mortem y comparación con registros ante mortem.",
+    "5. Conservación de evidencia odontológica: cadena de custodia.",
+    "6. Evaluación de lesiones orales en casos de abuso físico y negligencia.",
+    "7. Urgencias odontológicas en destacamentos rurales: manejo del dolor e infecciones.",
+    "8. Exodoncia de piezas retenidas o fracturadas en condiciones limitadas.",
+    "9. Tratamiento de hemorragias postextracción en pacientes con trastornos de coagulación.",
+    "10. Farmacología odontológica: analgésicos y antibióticos en entorno operativo.",
+    "11. Prevención de caries y enfermedad periodontal en personal policial.",
+    "12. Prótesis dentales removibles para efectivos con traumatismos maxilofaciales.",
+    "13. Estomatología: diagnóstico de cáncer oral en estadios tempranos.",
+    "14. Aplicación de flúor y sellantes en campañas de salud bucal para cadetes.",
+    "15. Manejo de infecciones odontogénicas graves (angina de Ludwig).",
+    "16. Cirugía oral menor en consultorios de la Policía: protocolos de asepsia.",
+    "17. Restauraciones estéticas con resina en el sector anterior.",
+    "18. Endodoncia básica para salvar piezas afectadas por caries profunda.",
+    "19. Radioprotección y manejo seguro del equipo de rayos X dental.",
+    "20. Ergonomía odontológica para prevenir lesiones en profesionales asistenciales.",
+    "21. Bioseguridad en odontología: control de infecciones y esterilización.",
+    "22. Atención odontológica a personas privadas de libertad: protocolos de seguridad.",
+    "23. Organización de campañas de fluorización y educación en salud bucal.",
+    "24. Diseño de programas de prevención para unidades tácticas de la Policía.",
+    "25. Manejo de fracturas mandibulares en primeros auxilios e inmovilización.",
+    "26. Reimplante dental en avulsiones traumáticas por accidentes de tránsito.",
+    "27. Trastornos temporomandibulares y bruxismo en personal sometido a estrés.",
+    "28. Prótesis implantosoportada para efectivos con pérdida dental por trauma.",
+    "29. Interpretación de radiografías panorámicas y cefalométricas.",
+    "30. Anestesia local en odontología: técnicas y complicaciones.",
+    "31. Sedación consciente en procedimientos quirúrgicos ambulatorios.",
+    "32. Consentimiento informado en tratamientos odontológicos y aspectos legales.",
+    "33. Gestión de residuos odontológicos peligrosos (amalgama, biológicos).",
+    "34. Normativa INEN para equipos odontológicos y su fiscalización.",
+    "35. Adquisición de sillones odontológicos y autoclaves bajo la LOSNCP.",
+    "36. Auditoría de servicios odontológicos en la Policía: indicadores de calidad.",
+    "37. Historia clínica odontológica única: estandarización y resguardo.",
+    "38. Responsabilidad profesional del odontólogo forense en juicios penales.",
+    "39. Ética en la práctica odontológica con población vulnerable.",
+    "40. Odontopediatría en hijos de servidores policiales: atención preventiva.",
+    "41. Periodoncia básica: raspado y alisado radicular en pacientes con gingivitis.",
+    "42. Prótesis parcial removible acrílica para rehabilitación inmediata.",
+    "43. Cirugía de cordales incluidos y complicaciones postoperatorias.",
+    "44. Implantología básica en el Hospital de la Policía: fases y cuidados.",
+    "45. Terapia con láser de baja intensidad en trastornos articulares.",
+    "46. Ortodoncia preventiva e interceptiva en niños y adolescentes.",
+    "47. Manejo de traumatismos dentoalveolares en escenarios de combate.",
+    "48. Fotografía odontológica forense: técnica y documentación.",
+    "49. Odontología deportiva: protectores bucales personalizados para policías.",
+    "50. Planificación estratégica del servicio odontológico en la institución policial."
+  ]
+};
+
+// ==================== CASOS BANCARIOS ====================
+App.casosBanco = {
+  'Medicina General': {
+    enunciado: "Un detenido en un calabozo de la Policía Nacional es encontrado muerto durante la madrugada. El cuerpo yace boca arriba, con un colchón parcialmente quemado y un frasco vacío de solvente. El médico de guardia debe realizar el levantamiento del cadáver y la valoración inicial. Se sospecha intoxicación por inhalación y se requiere precisar causa y manera de muerte.",
+    preguntas: [
+      "1. ¿Qué signos posmortem esperaría encontrar y cómo estimaría el intervalo de muerte?",
+      "2. Describa el procedimiento médico-legal para la toma de muestras toxicológicas y la preservación de la cadena de custodia.",
+      "3. ¿Qué consideraciones éticas y legales rigen la actuación del médico ante un fallecido bajo custodia policial?"
+    ],
+    solucion: "1. Signos posmortem: lividez fija en declive compatible con posición supina, rigidez en evolución, enfriamiento progresivo (algor mortis) y posible mancha verde abdominal por inicio de putrefacción. El intervalo se estima con el nomograma de Henssge, considerando la temperatura ambiente del calabozo. La presencia de solvente sugiere asfixia química; en autopsia pueden hallarse congestión pulmonar y olor característico en vísceras.\n2. Toma de muestras: sangre periférica (femoral), orina, humor vítreo y contenido gástrico, rotuladas con fecha, hora, identidad y firma. Se embalan en recipientes herméticos, se sellan y se registra cada entrega en el formulario de cadena de custodia hasta el Servicio Nacional de Medicina Legal.\n3. El médico actúa como perito imparcial (Art. 454 COIP). Debe documentar fielmente los hallazgos en la historia clínica pericial, sin emitir juicios sobre la custodia, pero reportando cualquier lesión sospechosa. La confidencialidad y el respeto a los derechos del fallecido y sus familiares son obligatorios."
+  },
+  'Enfermería': {
+    enunciado: "Un servidor policial sufre una herida por proyectil de arma de fuego en la extremidad inferior durante un operativo. Presenta hemorragia masiva. Usted, como enfermero/a, debe aplicar el protocolo XABCDE y colocar un torniquete. Además, el paciente muestra signos de shock hipovolémico.",
+    preguntas: [
+      "1. Describa la secuencia del protocolo XABCDE y cómo prioriza la colocación del torniquete.",
+      "2. Detalle la técnica correcta de colocación del torniquete y los cuidados posteriores.",
+      "3. ¿Qué medidas de bioseguridad y registro documental debe adoptar durante la atención?"
+    ],
+    solucion: "1. El protocolo XABCDE inicia con la X (hemorragias exanguinantes): control inmediato con torniquete si el sangrado es masivo. Luego A (vía aérea), B (ventilación), C (circulación), D (déficit neurológico) y E (exposición). Se prioriza detener la hemorragia para evitar choque hipovolémico.\n2. Técnica: coloque el torniquete a 5-8 cm proximal a la herida (evite articulaciones), ajuste hasta que cese el sangrado distal, anote la hora de colocación en la frente del paciente o en un rótulo. No lo retire; solo personal médico puede hacerlo. Vigile signos de síndrome compartimental.\n3. Use guantes, gafas y mascarilla. Registre en el Formulario 005 la hora del torniquete, signos vitales, volumen de líquidos administrados y procedimientos realizados. El registro es crucial para la continuidad de la atención y posibles implicaciones legales."
+  },
+  'Odontología': {
+    enunciado: "Un cadáver calcinado es hallado en un vehículo incendiado tras un presunto ajuste de cuentas. El equipo forense requiere la identificación odontológica. Usted, como odontólogo especialista, cuenta con una ficha dental ante mortem del sospechoso y debe realizar el cotejo.",
+    preguntas: [
+      "1. Describa el protocolo de toma de impresiones y radiografías post mortem en un cadáver calcinado.",
+      "2. ¿Cómo se comparan las características dentales (rugas palatinas, obturaciones, prótesis) con el registro ante mortem?",
+      "3. ¿Qué requisitos de cadena de custodia debe cumplir la evidencia odontológica para que sea admisible en un juicio?"
+    ],
+    solucion: "1. Se realiza una radiografía panorámica portátil (si hay posibilidad) y se toman fotografías intraorales. Con cuidado de no fracturar estructuras frágiles, se obtienen impresiones con alginato o silicona de adición. Se registran en la ficha dental post mortem todas las restauraciones, ausencias, fracturas y anomalías.\n2. Se cotejan: número de piezas presentes, superficies restauradas (OD, MOD), materiales de obturaciones (amalgama, resina), presencia de prótesis removibles o fijas, y la rugoscopia palatina. La coincidencia en al menos 12-16 puntos característicos da certeza de identificación.\n3. Las impresiones, fotografías y radiografías deben ser embaladas, selladas y rotuladas con los datos del caso (número de expediente, fecha, hora y firma del perito). Cada transferencia se registra en el formulario de cadena de custodia, garantizando la integridad de la evidencia para el proceso judicial."
+  }
+};
+
+// Caso de muestra (Enfermería) para el botón público
+App.muestraCaso = App.casosBanco['Enfermería'];
+
+// ==================== FUNCIONES ====================
+// Mostrar pantalla acceso
+App.mostrarAcceso = function() {
+  document.getElementById('accessScreen').style.display = 'flex';
+  document.getElementById('mainPanel').style.display = 'none';
+  document.getElementById('cedulaInput').value = '';
+  document.getElementById('carreraSelect').value = '';
+  document.getElementById('loginError').textContent = '';
+};
+
+// Mostrar panel principal
+App.mostrarPanel = function() {
+  document.getElementById('accessScreen').style.display = 'none';
+  document.getElementById('mainPanel').style.display = 'block';
+  document.getElementById('careerDisplay').textContent = App.currentUser.carrera;
+  document.getElementById('careerTemarioTitle').textContent = App.currentUser.carrera;
+  App.resetearCaso();
+  document.getElementById('userAnswer').value = '';
+  document.getElementById('modelAnswerBox').style.display = 'none';
+  document.getElementById('feedbackBox').style.display = 'none';
+  App.cargarTemario();
+};
+
+App.resetearCaso = function() {
+  App.currentCase = null;
+  document.getElementById('caseContent').innerHTML = 'Presione "Crear caso práctico" para comenzar.';
+  document.getElementById('modelAnswerBox').style.display = 'none';
+  document.getElementById('feedbackBox').style.display = 'none';
+  App.modelAnswerVisible = false;
+};
+
+// Login
+App.login = function() {
+  const cedula = document.getElementById('cedulaInput').value.trim();
+  const carrera = document.getElementById('carreraSelect').value;
+  const errorDiv = document.getElementById('loginError');
+  errorDiv.textContent = '';
+  if (!cedula || !carrera) {
+    errorDiv.textContent = 'Complete todos los campos.';
+    return;
+  }
+  const encontrado = App.usuarios.find(u => u.cedula === cedula && u.carrera === carrera);
+  if (encontrado) {
+    App.currentUser = encontrado;
+    App.mostrarPanel();
+  } else {
+    errorDiv.textContent = 'Cédula o carrera no autorizada.';
+  }
+};
+
+App.logout = function() {
+  App.currentUser = null;
+  App.mostrarAcceso();
+};
+
+// Temario
+App.cargarTemario = function() {
+  App.temasActuales = App.temarios[App.currentUser.carrera] || [];
+  App.renderizarTemario();
+};
+
+App.renderizarTemario = function(filtro = '') {
+  const container = document.getElementById('temarioContainer');
+  const filtrados = App.temasActuales.filter(t => t.toLowerCase().includes(filtro.toLowerCase()));
+  container.innerHTML = filtrados.map(t => `<div class="temario-item">${t}</div>`).join('');
+};
+
+App.filterTemas = function() {
+  const texto = document.getElementById('searchTema').value;
+  App.renderizarTemario(texto);
+};
+
+// Casos
+App.loadCaseFromBank = async function() {
+  if (!App.currentUser) return;
+  const caso = App.casosBanco[App.currentUser.carrera];
+  if (!caso) {
+    document.getElementById('caseContent').innerHTML = 'No hay caso precargado para esta carrera. Use "Nuevo caso con IA".';
+    App.currentCase = null;
+    return;
+  }
+  App.currentCase = caso;
+  App.displayCase(caso);
+};
+
+App.displayCase = function(caseObj) {
+  const html = `
+    <p><strong>Contexto operacional:</strong></p>
+    <p>${caseObj.enunciado}</p>
+    <p><strong>Preguntas:</strong></p>
+    <ol>${caseObj.preguntas.map(p => `<li>${p}</li>`).join('')}</ol>
+  `;
+  document.getElementById('caseContent').innerHTML = html;
+  document.getElementById('modelAnswerBox').style.display = 'none';
+  document.getElementById('feedbackBox').style.display = 'none';
+  App.modelAnswerVisible = false;
+};
+
+// Sanitizar JSON
+App.sanitizeJSON = function(str) {
+  let result = '';
+  let inString = false;
+  let escaped = false;
+  for (let i = 0; i < str.length; i++) {
+    const c = str[i];
+    if (escaped) { result += c; escaped = false; continue; }
+    if (c === '\\' && inString) { escaped = true; result += c; continue; }
+    if (c === '"') { inString = !inString; result += c; continue; }
+    if (inString && c.charCodeAt(0) < 0x20) {
+      if (c === '\n') result += '\\n';
+      else if (c === '\r') result += '\\r';
+      else if (c === '\t') result += '\\t';
+      else result += '\\u' + ('000' + c.charCodeAt(0).toString(16)).slice(-4);
+    } else {
+      result += c;
+    }
+  }
+  return result;
+};
+
+App.generateCaseWithAI = async function() {
+  if (!App.currentUser) return;
+  document.getElementById('caseLoading').style.display = 'block';
+  try {
+    if (!App.temasActuales || App.temasActuales.length === 0) {
+      throw new Error('No hay temario disponible. Recargue la página.');
+    }
+    const indice = Math.floor(Math.random() * App.temasActuales.length);
+    const temaSeleccionado = App.temasActuales[indice];
+    console.log(`Tema seleccionado aleatoriamente (#${indice+1}): ${temaSeleccionado}`);
+
+    const prompt = `Eres un experto evaluador de la Policía Nacional del Ecuador. Genera un caso práctico para un especialista en ${App.currentUser.carrera}. El caso debe centrarse EXCLUSIVAMENTE en el siguiente tema del temario:\n\n"${temaSeleccionado}"\n\nCombina la especialidad con doctrina policial, administración pública ecuatoriana (LOSNCP) y pensamiento crítico. Proporciona un contexto operacional realista, 3 preguntas técnicas y la respuesta técnica detallada. La respuesta técnica no debe exceder las 500 palabras. Devuelve la respuesta en formato JSON con exactamente los siguientes campos: "enunciado" (texto), "preguntas" (array de strings) y "solucion" (texto). No incluyas explicaciones adicionales. Solo el JSON.`;
+
+    const response = await App.callDeepSeek([
+      { role: 'system', content: 'Eres un generador de casos prácticos. Responde SOLO con un objeto JSON válido, sin markdown alrededor.' },
+      { role: 'user', content: prompt }
+    ], 0.5, 8000);
+
+    let jsonStr = response.trim();
+    const fenceMatch = jsonStr.match(/```(?:json)?\s*\n?([\s\S]*?)\n?```/);
+    if (fenceMatch) { jsonStr = fenceMatch[1].trim(); }
+    const firstBrace = jsonStr.indexOf('{');
+    if (firstBrace > 0) { jsonStr = jsonStr.substring(firstBrace); }
+
+    jsonStr = App.sanitizeJSON(jsonStr);
+    const caseData = JSON.parse(jsonStr);
+
+    if (caseData.enunciado && caseData.preguntas && caseData.solucion) {
+      App.currentCase = caseData;
+      App.displayCase(caseData);
+    } else {
+      throw new Error('El JSON no contiene los campos requeridos.');
+    }
+  } catch (e) {
+    console.error(e);
+    document.getElementById('caseContent').innerHTML = `<p>Error al generar caso con IA. ${e.message}</p>`;
+    App.currentCase = null;
+  } finally {
+    document.getElementById('caseLoading').style.display = 'none';
+  }
+};
+
+// Respuesta modelo y revisión
+App.showModelAnswer = function() {
+  if (!App.currentCase) { alert('Primero debe crear un caso práctico.'); return; }
+  const box = document.getElementById('modelAnswerBox');
+  document.getElementById('modelAnswerContent').innerHTML = `<pre>${App.currentCase.solucion}</pre>`;
+  box.style.display = 'block';
+  document.getElementById('feedbackBox').style.display = 'none';
+  App.modelAnswerVisible = true;
+};
+
+App.reviewMyAnswer = async function() {
+  if (!App.currentCase) { alert('No hay caso práctico activo.'); return; }
+  const userText = document.getElementById('userAnswer').value.trim();
+  if (!userText) { alert('Escriba su respuesta antes de solicitar revisión.'); return; }
+  if (!App.modelAnswerVisible) {
+    alert('Primero haga clic en "Ver respuesta técnica".');
+    return;
+  }
+  document.getElementById('feedbackLoading').style.display = 'block';
+  document.getElementById('feedbackBox').style.display = 'none';
+  try {
+    const prompt = `Eres un instructor experto de la Policía Nacional del Ecuador. Evalúa la respuesta del aspirante a especialista en ${App.currentUser.carrera}.\n\nCaso práctico:\n${App.currentCase.enunciado}\n\nPreguntas:\n${App.currentCase.preguntas.join('\n')}\n\nRespuesta modelo:\n${App.currentCase.solucion}\n\nRespuesta del aspirante:\n${userText}\n\nSeñala aciertos y errores concretos con tono constructivo, no condescendiente. Al final sugiere qué temas del temario repasar. Máximo 500 palabras.`;
+    const feedback = await App.callDeepSeek([
+      { role: 'system', content: 'Eres un instructor evaluador. Responde con texto claro y constructivo.' },
+      { role: 'user', content: prompt }
+    ], 0.7, 3000);
+    document.getElementById('feedbackContent').innerHTML = `<pre style="white-space: pre-wrap;">${feedback}</pre>`;
+    document.getElementById('feedbackBox').style.display = 'block';
+  } catch (e) {
+    document.getElementById('feedbackContent').innerHTML = `<p style="color:red;">Error al obtener evaluación: ${e.message}</p>`;
+    document.getElementById('feedbackBox').style.display = 'block';
+  } finally {
+    document.getElementById('feedbackLoading').style.display = 'none';
+  }
+};
+
+// API DeepSeek
+App.callDeepSeek = async function(messages, temperature = 0.7, maxTokens = 2000) {
+  const resp = await fetch(App.API_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${App.API_KEY}` },
+    body: JSON.stringify({ model: App.MODEL, messages, temperature, max_tokens: maxTokens })
+  });
+  if (!resp.ok) { const errBody = await resp.text(); throw new Error(`API error ${resp.status}: ${errBody}`); }
+  const data = await resp.json();
+  return data.choices[0].message.content;
+};
+
+// Modal de muestra
+App.mostrarMuestra = function() {
+  const modal = document.getElementById('modalMuestra');
+  const content = document.getElementById('muestraContent');
+  content.innerHTML = `
+    <p><strong>Contexto operacional:</strong></p>
+    <p>${App.muestraCaso.enunciado}</p>
+    <p><strong>Preguntas:</strong></p>
+    <ol>${App.muestraCaso.preguntas.map(p => `<li>${p}</li>`).join('')}</ol>
+    <p><strong>Respuesta técnica:</strong></p>
+    <pre>${App.muestraCaso.solucion}</pre>
+  `;
+  modal.style.display = 'flex';
+};
+
+App.cerrarModal = function() {
+  document.getElementById('modalMuestra').style.display = 'none';
+};
+
+// Inicialización
+window.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('btnIngresar').addEventListener('click', App.login);
+  document.getElementById('btnLogout').addEventListener('click', App.logout);
+  document.getElementById('btnCasoBanco').addEventListener('click', App.loadCaseFromBank);
+  document.getElementById('btnCasoIA').addEventListener('click', App.generateCaseWithAI);
+  document.getElementById('btnVerRespuesta').addEventListener('click', App.showModelAnswer);
+  document.getElementById('btnRevisar').addEventListener('click', App.reviewMyAnswer);
+  document.getElementById('btnMuestra').addEventListener('click', App.mostrarMuestra);
+  document.getElementById('closeModalBtn').addEventListener('click', App.cerrarModal);
+  window.addEventListener('click', (e) => {
+    if (e.target === document.getElementById('modalMuestra')) App.cerrarModal();
+  });
+  App.mostrarAcceso();
+});
+</script>
+</body>
+</html>
