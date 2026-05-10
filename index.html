@@ -88,7 +88,7 @@
 <div id="modalMuestra" class="modal">
   <div class="modal-content">
     <button class="close-modal" id="closeModalBtn">&times;</button>
-    <h3>Caso Práctico de Muestra (Enfermería)</h3>
+    <h3>Caso Práctico de Muestra (Enfermería - con integración de doctrina policial)</h3>
     <div id="muestraContent"></div>
   </div>
 </div>
@@ -160,7 +160,7 @@
 const App = {
   API_KEY: 'sk-5be59b1373ae48dfb7a39e9b2e5b5a46',
   API_URL: 'https://api.deepseek.com/v1/chat/completions',
-  MODEL: 'deepseek-v4-flash',
+  MODEL: 'deepseek-chat',  // modelo estable, evitamos deepseek-v4-flash que no es oficial
   currentUser: null,
   currentCase: null,
   modelAnswerVisible: false,
@@ -279,86 +279,87 @@ App.temarios = {
   ],
   'Odontología': [
     "1. Urgencias odontológicas en destacamentos rurales: manejo del dolor e infecciones.",
-  "2. Exodoncia de piezas retenidas o fracturadas en condiciones limitadas.",
-  "3. Tratamiento de hemorragias postextracción en pacientes con trastornos de coagulación.",
-  "4. Farmacología odontológica: analgésicos y antibióticos en entorno operativo.",
-  "5. Prevención de caries y enfermedad periodontal en personal policial.",
-  "6. Prótesis dentales removibles para efectivos con traumatismos maxilofaciales.",
-  "7. Estomatología: diagnóstico de cáncer oral en estadios tempranos.",
-  "8. Aplicación de flúor y sellantes en campañas de salud bucal para cadetes.",
-  "9. Manejo de infecciones odontogénicas graves (angina de Ludwig).",
-  "10. Cirugía oral menor en consultorios de la Policía: protocolos de asepsia.",
-  "11. Restauraciones estéticas con resina en el sector anterior.",
-  "12. Endodoncia básica para salvar piezas afectadas por caries profunda.",
-  "13. Radioprotección y manejo seguro del equipo de rayos X dental.",
-  "14. Ergonomía odontológica para prevenir lesiones en profesionales asistenciales.",
-  "15. Bioseguridad en odontología: control de infecciones y esterilización.",
-  "16. Atención odontológica a personas privadas de libertad: protocolos de seguridad.",
-  "17. Organización de campañas de fluorización y educación en salud bucal.",
-  "18. Diseño de programas de prevención para unidades tácticas de la Policía.",
-  "19. Manejo de fracturas mandibulares en primeros auxilios e inmovilización.",
-  "20. Reimplante dental en avulsiones traumáticas por accidentes de tránsito.",
-  "21. Trastornos temporomandibulares y bruxismo en personal sometido a estrés.",
-  "22. Prótesis implantosoportada para efectivos con pérdida dental por trauma.",
-  "23. Interpretación de radiografías panorámicas y cefalométricas.",
-  "24. Anestesia local en odontología: técnicas y complicaciones.",
-  "25. Sedación consciente en procedimientos quirúrgicos ambulatorios.",
-  "26. Consentimiento informado en tratamientos odontológicos y aspectos legales.",
-  "27. Gestión de residuos odontológicos peligrosos (amalgama, biológicos).",
-  "28. Normativa INEN para equipos odontológicos y su fiscalización.",
-  "29. Adquisición de sillones odontológicos y autoclaves bajo la LOSNCP.",
-  "30. Auditoría de servicios odontológicos en la Policía: indicadores de calidad.",
-  "31. Historia clínica odontológica única: estandarización y resguardo.",
-  "32. Ética en la práctica odontológica con población vulnerable.",
-  "33. Odontopediatría en hijos de servidores policiales: atención preventiva.",
-  "34. Periodoncia básica: raspado y alisado radicular en pacientes con gingivitis.",
-  "35. Prótesis parcial removible acrílica para rehabilitación inmediata.",
-  "36. Cirugía de cordales incluidos y complicaciones postoperatorias.",
-  "37. Implantología básica en el Hospital de la Policía: fases y cuidados.",
-  "38. Terapia con láser de baja intensidad en trastornos articulares.",
-  "39. Ortodoncia preventiva e interceptiva en niños y adolescentes.",
-  "40. Manejo de traumatismos dentoalveolares en escenarios de combate.",
-  "41. Odontología deportiva: protectores bucales personalizados para policías.",
-  "42. Planificación estratégica del servicio odontológico en la institución policial.",
-  "43. Atención odontológica domiciliaria a personal herido en cumplimiento del deber.",
-  "44. Diagnóstico y manejo de xerostomía en pacientes polimedicados.",
-  "45. Manejo de alergias a anestésicos locales en la consulta odontológica.",
-  "46. Técnicas de blanqueamiento dental en consultorio: indicaciones y seguridad.",
-  "47. Uso de antibióticos profilácticos en pacientes con riesgo de endocarditis.",
-  "48. Interpretación de lesiones radiolúcidas y radiopacas frecuentes en maxilares.",
-  "49. Tratamiento de la sensibilidad dentinaria post restauraciones.",
-  "50. Odontología mínimamente invasiva y preservación de tejido dentario."
+    "2. Exodoncia de piezas retenidas o fracturadas en condiciones limitadas.",
+    "3. Tratamiento de hemorragias postextracción en pacientes con trastornos de coagulación.",
+    "4. Farmacología odontológica: analgésicos y antibióticos en entorno operativo.",
+    "5. Prevención de caries y enfermedad periodontal en personal policial.",
+    "6. Prótesis dentales removibles para efectivos con traumatismos maxilofaciales.",
+    "7. Estomatología: diagnóstico de cáncer oral en estadios tempranos.",
+    "8. Aplicación de flúor y sellantes en campañas de salud bucal para cadetes.",
+    "9. Manejo de infecciones odontogénicas graves (angina de Ludwig).",
+    "10. Cirugía oral menor en consultorios de la Policía: protocolos de asepsia.",
+    "11. Restauraciones estéticas con resina en el sector anterior.",
+    "12. Endodoncia básica para salvar piezas afectadas por caries profunda.",
+    "13. Radioprotección y manejo seguro del equipo de rayos X dental.",
+    "14. Ergonomía odontológica para prevenir lesiones en profesionales asistenciales.",
+    "15. Bioseguridad en odontología: control de infecciones y esterilización.",
+    "16. Atención odontológica a personas privadas de libertad: protocolos de seguridad.",
+    "17. Organización de campañas de fluorización y educación en salud bucal.",
+    "18. Diseño de programas de prevención para unidades tácticas de la Policía.",
+    "19. Manejo de fracturas mandibulares en primeros auxilios e inmovilización.",
+    "20. Reimplante dental en avulsiones traumáticas por accidentes de tránsito.",
+    "21. Trastornos temporomandibulares y bruxismo en personal sometido a estrés.",
+    "22. Prótesis implantosoportada para efectivos con pérdida dental por trauma.",
+    "23. Interpretación de radiografías panorámicas y cefalométricas.",
+    "24. Anestesia local en odontología: técnicas y complicaciones.",
+    "25. Sedación consciente en procedimientos quirúrgicos ambulatorios.",
+    "26. Consentimiento informado en tratamientos odontológicos y aspectos legales.",
+    "27. Gestión de residuos odontológicos peligrosos (amalgama, biológicos).",
+    "28. Normativa INEN para equipos odontológicos y su fiscalización.",
+    "29. Adquisición de sillones odontológicos y autoclaves bajo la LOSNCP.",
+    "30. Auditoría de servicios odontológicos en la Policía: indicadores de calidad.",
+    "31. Historia clínica odontológica única: estandarización y resguardo.",
+    "32. Ética en la práctica odontológica con población vulnerable.",
+    "33. Odontopediatría en hijos de servidores policiales: atención preventiva.",
+    "34. Periodoncia básica: raspado y alisado radicular en pacientes con gingivitis.",
+    "35. Prótesis parcial removible acrílica para rehabilitación inmediata.",
+    "36. Cirugía de cordales incluidos y complicaciones postoperatorias.",
+    "37. Implantología básica en el Hospital de la Policía: fases y cuidados.",
+    "38. Terapia con láser de baja intensidad en trastornos articulares.",
+    "39. Ortodoncia preventiva e interceptiva en niños y adolescentes.",
+    "40. Manejo de traumatismos dentoalveolares en escenarios de combate.",
+    "41. Odontología deportiva: protectores bucales personalizados para policías.",
+    "42. Planificación estratégica del servicio odontológico en la institución policial.",
+    "43. Atención odontológica domiciliaria a personal herido en cumplimiento del deber.",
+    "44. Diagnóstico y manejo de xerostomía en pacientes polimedicados.",
+    "45. Manejo de alergias a anestésicos locales en la consulta odontológica.",
+    "46. Técnicas de blanqueamiento dental en consultorio: indicaciones y seguridad.",
+    "47. Uso de antibióticos profilácticos en pacientes con riesgo de endocarditis.",
+    "48. Interpretación de lesiones radiolúcidas y radiopacas frecuentes en maxilares.",
+    "49. Tratamiento de la sensibilidad dentinaria post restauraciones.",
+    "50. Odontología mínimamente invasiva y preservación de tejido dentario."
   ]
 };
 
+// Casos precargados con integración de doctrina policial y sin alucinaciones legales
 App.casosBanco = {
   'Medicina General': {
-    enunciado: "Un cadete de 22 años, durante una prueba física en el centro de formación policial en Manabí, presenta confusión, piel caliente y seca, temperatura axilar de 40.2 °C, taquicardia y taquipnea. El instructor sospecha golpe de calor y lo traslada al dispensario médico. Usted es el médico general de guardia. La temperatura ambiental es de 34 °C y la humedad relativa del 85 %.",
+    enunciado: "Un cadete de 22 años, durante una prueba física en el centro de formación policial en Manabí, presenta confusión, piel caliente y seca, temperatura axilar de 40.2 °C, taquicardia y taquipnea. El instructor sospecha golpe de calor y lo traslada al dispensario médico. Usted es el médico general de guardia. La temperatura ambiental es de 34 °C y la humedad relativa del 85 %. Aplique la doctrina policial de autogestión y seguridad operativa para prevenir nuevos eventos.",
     preguntas: [
       "1. Realice el diagnóstico presuntivo y describa la fisiopatología del golpe de calor por esfuerzo.",
       "2. Detalle el manejo inmediato y el plan de enfriamiento activo, incluyendo farmacoterapia si corresponde.",
-      "3. ¿Qué medidas preventivas recomendaría al departamento de entrenamiento para evitar nuevos casos, considerando la normativa de seguridad y salud ocupacional?"
+      "3. ¿Qué medidas preventivas recomendaría al departamento de entrenamiento para evitar nuevos casos, considerando la normativa de seguridad y salud ocupacional? Integre la doctrina de autogestión."
     ],
-    solucion: "1. Diagnóstico presuntivo: golpe de calor por esfuerzo (temperatura central >40 °C, disfunción neurológica, exposición a calor). Fisiopatología: la producción de calor metabólico supera la capacidad de termorregulación (sudoración y vasodilatación cutánea) saturadas por la alta humedad. Se produce colapso termorregulador central, fallo multiorgánico por hipertermia directa, rabdomiólisis y coagulación intravascular diseminada.\n2. Manejo inmediato: retirar al paciente del ambiente caluroso, desvestirlo, iniciar enfriamiento activo con compresas frías en cuello, axilas e ingles, aspersión de agua fría y ventilación. Si está disponible, usar manta de enfriamiento. Administrar suero salino frío intravenoso (20 mL/kg en bolo inicial). Monitorear signos vitales, ECG y temperatura cada 5-10 minutos. Si hay convulsiones, diazepam 5-10 mg IV. Trasladar a un hospital si no mejora en 30 minutos o hay deterioro neurológico.\n3. Prevención: aclimatación progresiva al calor durante 7-14 días, programar ejercicios intensos en horas frescas, hidratación programada (agua fresca cada 20 min), pausas obligatorias, vigilancia del índice WBGT (temperatura de globo y bulbo húmedo), capacitación del personal para reconocer signos tempranos."
+    solucion: "1. Diagnóstico presuntivo: golpe de calor por esfuerzo (temperatura central >40 °C, disfunción neurológica, exposición a calor). Fisiopatología: la producción de calor metabólico supera la capacidad de termorregulación (sudoración y vasodilatación cutánea) saturadas por la alta humedad. Se produce colapso termorregulador central, fallo multiorgánico por hipertermia directa, rabdomiólisis y coagulación intravascular diseminada.\n2. Manejo inmediato: retirar al paciente del ambiente caluroso, desvestirlo, iniciar enfriamiento activo con compresas frías en cuello, axilas e ingles, aspersión de agua fría y ventilación. Si está disponible, usar manta de enfriamiento. Administrar suero salino frío intravenoso (20 mL/kg en bolo inicial). Monitorear signos vitales, ECG y temperatura cada 5-10 minutos. Si hay convulsiones, diazepam 5-10 mg IV. Trasladar a un hospital si no mejora en 30 minutos o hay deterioro neurológico.\n3. Prevención: aclimatación progresiva al calor durante 7-14 días, programar ejercicios intensos en horas frescas, hidratación programada (agua fresca cada 20 min), pausas obligatorias, vigilancia del índice WBGT (temperatura de globo y bulbo húmedo), capacitación del personal para reconocer signos tempranos. Aplicando autogestión, se debe crear un comité de seguridad que revise periódicamente los protocolos de entrenamiento y fomente la denuncia temprana de síntomas."
   },
   'Enfermería': {
-    enunciado: "Un servidor policial sufre una herida por proyectil de arma de fuego en la extremidad inferior durante un operativo. Presenta hemorragia masiva. Usted, como enfermero/a, debe aplicar el protocolo XABCDE y colocar un torniquete. Además, el paciente muestra signos de shock hipovolémico.",
+    enunciado: "Un servidor policial sufre una herida por proyectil de arma de fuego en la extremidad inferior durante un operativo. Presenta hemorragia masiva. Usted, como enfermero/a, debe aplicar el protocolo XABCDE y colocar un torniquete. Además, el paciente muestra signos de shock hipovolémico. Integre la doctrina de seguridad operativa y autogestión en la atención.",
     preguntas: [
       "1. Describa la secuencia del protocolo XABCDE y cómo prioriza la colocación del torniquete.",
       "2. Detalle la técnica correcta de colocación del torniquete y los cuidados posteriores.",
-      "3. ¿Qué medidas de bioseguridad y registro documental debe adoptar durante la atención?"
+      "3. ¿Qué medidas de bioseguridad y registro documental debe adoptar durante la atención, alineadas con los principios de transparencia y autogestión?"
     ],
-    solucion: "1. El protocolo XABCDE inicia con la X (hemorragias exanguinantes): control inmediato con torniquete si el sangrado es masivo. Luego A (vía aérea), B (ventilación), C (circulación), D (déficit neurológico) y E (exposición). Se prioriza detener la hemorragia para evitar choque hipovolémico.\n2. Técnica: coloque el torniquete a 5-8 cm proximal a la herida (evite articulaciones), ajuste hasta que cese el sangrado distal, anote la hora de colocación en la frente del paciente o en un rótulo. No lo retire; solo personal médico puede hacerlo. Vigile signos de síndrome compartimental.\n3. Use guantes, gafas y mascarilla. Registre en el Formulario 005 la hora del torniquete, signos vitales, volumen de líquidos administrados y procedimientos realizados. El registro es crucial para la continuidad de la atención y posibles implicaciones legales."
+    solucion: "1. El protocolo XABCDE inicia con la X (hemorragias exanguinantes): control inmediato con torniquete si el sangrado es masivo. Luego A (vía aérea), B (ventilación), C (circulación), D (déficit neurológico) y E (exposición). Se prioriza detener la hemorragia para evitar choque hipovolémico.\n2. Técnica: coloque el torniquete a 5-8 cm proximal a la herida (evite articulaciones), ajuste hasta que cese el sangrado distal, anote la hora de colocación en la frente del paciente o en un rótulo. No lo retire; solo personal médico puede hacerlo. Vigile signos de síndrome compartimental.\n3. Use guantes, gafas y mascarilla. Registre en el Formulario 005 la hora del torniquete, signos vitales, volumen de líquidos administrados y procedimientos realizados. El registro es crucial para la continuidad de la atención y posibles implicaciones legales. La autogestión se evidencia al mantener el botiquín táctico bien surtido y capacitar al personal en el uso correcto del material hemostático."
   },
   'Odontología': {
-    enunciado: "Un servidor policial de 35 años acude al dispensario odontológico con dolor intenso en la mandíbula inferior derecha, trismus marcado y fiebre de 38.8 °C. A la exploración presenta una tumefacción dura y dolorosa en la zona del ángulo mandibular, con caries profunda en la pieza 46. La radiografía muestra una lesión radiolúcida periapical. Se diagnostica una infección odontogénica con riesgo de angina de Ludwig.",
-  preguntas: [
-    "1. Describa la fisiopatología de la angina de Ludwig y los criterios de alarma para derivación hospitalaria urgente.",
-    "2. ¿Cuál sería el manejo clínico inmediato en el consultorio odontológico policial, incluyendo farmacoterapia y drenaje si es necesario?",
-    "3. ¿Qué protocolos de bioseguridad y registro documental debe cumplir durante la atención de este paciente?"
-  ],
-  solucion: "1. La angina de Ludwig es una celulitis rápidamente progresiva que involucra los espacios submandibular, sublingual y submentoniano, generalmente de origen odontogénico. Causa edema duro, elevación de la lengua, dificultad respiratoria y puede llevar a obstrucción de la vía aérea. Criterios de alarma: trismus severo, disfagia, sialorrea, disnea y estridor laríngeo. Ante estos signos se debe trasladar de inmediato al hospital.\n2. Manejo inmediato: administrar antibiótico intravenoso de amplio espectro (ej. penicilina G + metronidazol o clindamicina si alergia), analgesia (AINE + opioide si dolor severo), hidratación y observación continua. Si hay absceso localizado y el odontólogo está capacitado, se puede realizar drenaje quirúrgico con anestesia local en condiciones de asepsia. De lo contrario, referir para drenaje hospitalario.\n3. Bioseguridad: barreras de protección (guantes, mascarilla, gafas), esterilización de instrumental y manejo de residuos cortopunzantes. Registro: documentar en la historia clínica odontológica única: hallazgos, plan de tratamiento, medicación administrada (dosis, vía, hora) y consentimiento informado firmado. El registro es crucial para la continuidad asistencial y posibles fines legales."
-}
+    enunciado: "Un servidor policial de 35 años acude al dispensario odontológico con dolor intenso en la mandíbula inferior derecha, trismus marcado y fiebre de 38.8 °C. A la exploración presenta una tumefacción dura y dolorosa en la zona del ángulo mandibular, con caries profunda en la pieza 46. La radiografía muestra una lesión radiolúcida periapical. Se diagnostica una infección odontogénica con riesgo de angina de Ludwig. Aplique principios de seguridad operativa y autogestión en el manejo.",
+    preguntas: [
+      "1. Describa la fisiopatología de la angina de Ludwig y los criterios de alarma para derivación hospitalaria urgente.",
+      "2. ¿Cuál sería el manejo clínico inmediato en el consultorio odontológico policial, incluyendo farmacoterapia y drenaje si es necesario?",
+      "3. ¿Qué protocolos de bioseguridad y registro documental debe cumplir durante la atención de este paciente, según la doctrina policial?"
+    ],
+    solucion: "1. La angina de Ludwig es una celulitis rápidamente progresiva que involucra los espacios submandibular, sublingual y submentoniano, generalmente de origen odontogénico. Causa edema duro, elevación de la lengua, dificultad respiratoria y puede llevar a obstrucción de la vía aérea. Criterios de alarma: trismus severo, disfagia, sialorrea, disnea y estridor laríngeo. Ante estos signos se debe trasladar de inmediato al hospital.\n2. Manejo inmediato: administrar antibiótico intravenoso de amplio espectro (ej. penicilina G + metronidazol o clindamicina si alergia), analgesia (AINE + opioide si dolor severo), hidratación y observación continua. Si hay absceso localizado y el odontólogo está capacitado, se puede realizar drenaje quirúrgico con anestesia local en condiciones de asepsia. De lo contrario, referir para drenaje hospitalario.\n3. Bioseguridad: barreras de protección (guantes, mascarilla, gafas), esterilización de instrumental y manejo de residuos cortopunzantes. Registro: documentar en la historia clínica odontológica única: hallazgos, plan de tratamiento, medicación administrada (dosis, vía, hora) y consentimiento informado firmado. El registro es crucial para la continuidad asistencial y posibles fines legales. La autogestión implica que el odontólogo mantenga actualizados los protocolos de referencia y realice auditorías periódicas de la calidad de la atención."
+  }
 };
 
 App.muestraCaso = App.casosBanco['Enfermería'];
@@ -405,7 +406,7 @@ App.login = function() {
     App.currentUser = encontrado;
     App.mostrarPanel();
   } else {
-    errorDiv.textContent = 'Cédula o carrera no autorizada.';
+    errorDiv.textContent = 'Cédula o carrera no autorizada. Pruebe: 1722222222 (Medicina), 1733333333 (Enfermería), 1744444444 (Odontología).';
   }
 };
 
@@ -476,6 +477,7 @@ App.sanitizeJSON = function(str) {
   return result;
 };
 
+// Función de generación con IA modificada para evitar alucinaciones e integrar doctrina policial
 App.generateCaseWithAI = async function() {
   if (!App.currentUser) return;
   document.getElementById('caseLoading').style.display = 'block';
@@ -487,10 +489,17 @@ App.generateCaseWithAI = async function() {
     const temaSeleccionado = App.temasActuales[indice];
     console.log(`Tema seleccionado aleatoriamente (#${indice+1}): ${temaSeleccionado}`);
 
-    const prompt = `Eres un experto evaluador de la Policía Nacional del Ecuador. Genera un caso práctico para un especialista en ${App.currentUser.carrera}. El caso debe centrarse EXCLUSIVAMENTE en el siguiente tema del temario:\n\n"${temaSeleccionado}"\n\nCombina la especialidad con doctrina policial, administración pública ecuatoriana (LOSNCP) y pensamiento crítico. Proporciona un contexto operacional realista, 3 preguntas técnicas y la respuesta técnica detallada. La respuesta técnica no debe exceder las 500 palabras. Devuelve la respuesta en formato JSON con exactamente los siguientes campos: "enunciado" (texto), "preguntas" (array de strings) y "solucion" (texto). No incluyas explicaciones adicionales. Solo el JSON.`;
+    const prompt = `Eres un experto evaluador de la Policía Nacional del Ecuador. Genera un caso práctico para un especialista en ${App.currentUser.carrera}. El caso debe centrarse EXCLUSIVAMENTE en el siguiente tema del temario:\n\n"${temaSeleccionado}"\n\n
+      IMPORTANTE - INSTRUCCIONES ESTRICTAS:
+      1. NO inventes números de artículos de la LOSNCP, ni números de normas INEN, ni códigos específicos que no puedas verificar.
+      2. Si necesitas hacer referencia a una ley o norma, describe cómo se aplicaría en la práctica, por ejemplo: "según la normativa de contratación pública ecuatoriana (LOSNCP), se debe seguir un procedimiento de menor cuantía" o "de acuerdo con la norma INEN aplicable a equipos médicos (consultar catálogo actualizado)".
+      3. No proporciones números de artículos a menos que estés absolutamente seguro (si no, omítelos y describe el principio general).
+      4. Integra explícitamente la doctrina policial de AUTOGESTIÓN y SEGURIDAD OPERATIVA en el contexto, las preguntas y la solución. Por ejemplo, menciona cómo el personal puede anticiparse a riesgos, mantener equipos, realizar mantenimiento autónomo, o cómo la seguridad operativa condiciona la atención sanitaria.
+      5. Si no recuerdas un dato exacto, indica que se debe consultar la fuente oficial (ej. "se debe revisar el listado actualizado de normas INEN en el portal del Servicio Ecuatoriano de Normalización").
+      Genera un contexto operacional realista, 3 preguntas técnicas y la respuesta técnica detallada (máx. 500 palabras). Devuelve JSON con: "enunciado", "preguntas" (array de strings), "solucion". Solo el objeto JSON, sin texto adicional.`;
 
     const response = await App.callDeepSeek([
-      { role: 'system', content: 'Eres un generador de casos prácticos. Responde SOLO con un objeto JSON válido, sin markdown alrededor.' },
+      { role: 'system', content: 'Eres un generador de casos prácticos para la Policía Nacional. Cumple estrictamente las instrucciones: no alucines leyes ni normas; integra doctrina policial; si no sabes un número exacto, describe el procedimiento o indica consultar fuente oficial. Responde SOLO con un objeto JSON válido, sin markdown.' },
       { role: 'user', content: prompt }
     ], 0.5, 8000);
 
@@ -527,6 +536,7 @@ App.showModelAnswer = function() {
   App.modelAnswerVisible = true;
 };
 
+// Evaluación modificada para evitar alucinaciones y señalar inventos
 App.reviewMyAnswer = async function() {
   if (!App.currentCase) { alert('No hay caso práctico activo.'); return; }
   const userText = document.getElementById('userAnswer').value.trim();
@@ -538,9 +548,30 @@ App.reviewMyAnswer = async function() {
   document.getElementById('feedbackLoading').style.display = 'block';
   document.getElementById('feedbackBox').style.display = 'none';
   try {
-    const prompt = `Eres un instructor experto de la Policía Nacional del Ecuador. Evalúa la respuesta del aspirante a especialista en ${App.currentUser.carrera}.\n\nCaso práctico:\n${App.currentCase.enunciado}\n\nPreguntas:\n${App.currentCase.preguntas.join('\n')}\n\nRespuesta modelo:\n${App.currentCase.solucion}\n\nRespuesta del aspirante:\n${userText}\n\nSeñala aciertos y errores concretos con tono constructivo, no condescendiente. Al final sugiere qué temas del temario repasar. Máximo 500 palabras.`;
+    const prompt = `Eres un instructor evaluador de la Policía Nacional del Ecuador. Evalúa la respuesta del aspirante a especialista en ${App.currentUser.carrera}.
+
+    Caso práctico:
+    ${App.currentCase.enunciado}
+
+    Preguntas:
+    ${App.currentCase.preguntas.join('\n')}
+
+    Respuesta modelo (de referencia):
+    ${App.currentCase.solucion}
+
+    Respuesta del aspirante:
+    ${userText}
+
+    INSTRUCCIONES ESTRICTAS PARA LA EVALUACIÓN:
+    - Señala aciertos y errores concretos, con tono constructivo y profesional.
+    - Si el aspirante cita un número de artículo de la LOSNCP, una norma INEN con número específico, o cualquier código que parezca inventado o que no se corresponda con la realidad, indícalo claramente y sugiere no inventar referencias. Recomienda describir el procedimiento o consultar la fuente oficial.
+    - Tú mismo, como evaluador, NO debes inventar números de leyes, normas o artículos. Si necesitas hacer referencia, usa frases como "de acuerdo con la LOSNCP vigente" o "según la normativa técnica aplicable (consultar el INEN)".
+    - Incorpora la doctrina policial (autogestión, seguridad operativa) en la retroalimentación cuando sea relevante.
+    - Sugiere qué temas del temario oficial debería repasar el aspirante para mejorar.
+    - Máximo 500 palabras.`;
+
     const feedback = await App.callDeepSeek([
-      { role: 'system', content: 'Eres un instructor evaluador. Responde con texto claro y constructivo.' },
+      { role: 'system', content: 'Eres un instructor evaluador. No alucines números de leyes, artículos o normas. Si el aspirante inventa referencias, señálalo. Sé constructivo y didáctico. Responde en texto claro.' },
       { role: 'user', content: prompt }
     ], 0.7, 3000);
     document.getElementById('feedbackContent').innerHTML = `<pre style="white-space: pre-wrap;">${feedback}</pre>`;
@@ -568,12 +599,13 @@ App.mostrarMuestra = function() {
   const modal = document.getElementById('modalMuestra');
   const content = document.getElementById('muestraContent');
   content.innerHTML = `
-    <p><strong>Contexto operacional:</strong></p>
+    <p><strong>Contexto operacional (con doctrina policial):</strong></p>
     <p>${App.muestraCaso.enunciado}</p>
     <p><strong>Preguntas:</strong></p>
     <ol>${App.muestraCaso.preguntas.map(p => `<li>${p}</li>`).join('')}</ol>
     <p><strong>Respuesta técnica:</strong></p>
     <pre>${App.muestraCaso.solucion}</pre>
+    <p style="margin-top:1rem; font-size:0.85rem;"><em>Este caso de muestra ya integra la doctrina policial y evita referencias inventadas a leyes o normas.</em></p>
   `;
   modal.style.display = 'flex';
 };
